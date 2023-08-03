@@ -1,5 +1,7 @@
 # gradio quickstart app
 import gradio as gr
+import cv2
+import numpy as np
 
 def greet(name):
     # greet function that takes in a name and returns a greeting
@@ -62,11 +64,43 @@ def multiple_interface():
     gr.Interface(fn=greet2, inputs=inputs, outputs=outputs).launch()
 
 
+def apply_filter(input_img, filter_array):
+    #sepia_filter = np.array([
+    #    [0.393, 0.769, 0.189], 
+    #    [0.349, 0.686, 0.168], 
+    #    [0.272, 0.534, 0.131]
+    #])
+    img = input_img.dot(filter_array.T)
+    img /= img.max()
+    return img
 
+def normalize_kernal(array):
+    return array / array.sum()
+
+def filter_image(input_image):
+        
+    # Define the Gaussian blur kernel
+    gaussian_kernel = np.array([
+        [0.075, 0.124, 0.075],
+        [0.124, 0.204, 0.124],
+        [0.075, 0.124, 0.075]
+    ])
+
+    # Normalize the kernel to make the sum of its elements equal to 1
+    kernel = normalize_kernal(gaussian_kernel)
+
+    # Apply Gaussian blur
+    return cv2.filter2D(input_image, -1, kernel=kernel)
+
+
+def basic_image_interface():
+    inputs = [gr.Image(label="Input an image")]
+    outputs = [gr.Image(label="Output image")]
+    gr.Interface(fn=filter_image, inputs=inputs, outputs=outputs).launch()
 
 if __name__ == "__main__":
     
-    multiple_interface()
+    basic_image_interface()
 
     
 

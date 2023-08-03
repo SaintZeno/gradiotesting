@@ -8,6 +8,7 @@ if (Test-Path requirements.txt) {
 } else {
     # install gradio package
     pip install gradio
+    pip install opencv-python
     # eventually we'll intsall some other stuff too
     # install other stuff!!
     # done installing everything!
